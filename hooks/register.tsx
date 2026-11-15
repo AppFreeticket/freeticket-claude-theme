@@ -119,14 +119,14 @@ ${board}
 <text x="250" y="818" text-anchor="middle" font-family="Courier New,monospace" font-weight="700" font-size="9" fill="#070707">HOY</text>
 <text x="250" y="831" text-anchor="middle" font-family="Courier New,monospace" font-weight="700" font-size="9" fill="#070707">SET CITOS</text>
 <rect x="172" y="842" width="92" height="88" fill="#cfcdc6"/>
-<rect x="176" y="846" width="40" height="84" fill="#1d2827"/><rect x="220" y="846" width="40" height="84" fill="#1d2827"/>
-<g class="win"><rect x="176" y="846" width="84" height="84" fill="#ffd102" opacity=".18"/></g>
+<rect x="176" y="846" width="40" height="84" fill="#3a2410"/><rect x="220" y="846" width="40" height="84" fill="#3a2410"/>
+<g class="win"><rect x="176" y="846" width="84" height="84" fill="#ffa53a" opacity=".45"/></g>
 <rect x="210" y="880" width="2" height="12" fill="#cfcdc6"/><rect x="224" y="880" width="2" height="12" fill="#cfcdc6"/>
 <rect x="272" y="850" width="72" height="80" fill="#3a3a37"/>
 <rect x="272" y="860" width="72" height="1" fill="#2a2a28"/><rect x="272" y="872" width="72" height="1" fill="#2a2a28"/>
 <rect x="272" y="884" width="72" height="1" fill="#2a2a28"/><rect x="272" y="896" width="72" height="1" fill="#2a2a28"/>
 <rect x="272" y="908" width="72" height="1" fill="#2a2a28"/><rect x="272" y="920" width="72" height="1" fill="#2a2a28"/>
-<rect x="160" y="930" width="116" height="6" fill="#ffd102" opacity=".08"/>`
+<rect x="160" y="930" width="116" height="8" fill="#ffa53a" opacity=".18"/>`
 
 // Ticket booth: striped awning, a yellow FREETICKET sign, a lit window.
 const BOOTH = [
@@ -197,7 +197,7 @@ ${BOOM}
 
 const LOOK: ThemeSetArgs = {
   colors: theme,
-  backdrop: { scene: 'freeticket-snow', glass: false },
+  backdrop: { scene: 'freeticket-snow', glass: { blur: 14, tint: '#070707', opacity: 0.55 } },
 }
 
 export const register: Register = on => {
