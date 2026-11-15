@@ -141,6 +141,7 @@ export const register: Register = on => {
     if (unpainted !== undefined) {
       $.ui.toast(unpainted)
     }
+    await $.command.register({ name: 'freeticket-theme', description: 'Re-apply the FreeTicket look and say whether this app draws it' })
     const set = await $.theme.set(LOOK)
 
     if (!set.isDrawn) {
@@ -148,6 +149,12 @@ export const register: Register = on => {
     }
 
     return next(e)
+  })
+
+  on('command.run', { command: 'freeticket-theme' }, async $ => {
+    const set = await $.theme.set(LOOK)
+
+    return { text: set.isDrawn ? 'FreeTicket look applied: this app draws it.' : `Not drawn here: ${set.reason}` }
   })
 
   on('ui.render', { component: 'Backdrop' }, ($, e, next) => {
