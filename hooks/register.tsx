@@ -22,8 +22,8 @@ const { theme, problems } = makeColors({
   },
 })
 
-// Pixel art, snowy night: a quiet sky over a band of hills and pines at the foot. Left, the entrance to the
-// Boom Stand Up Bar with its marquee lit; right, a little ticket booth and the orange critter selling tickets. The sky is plain gradient with
+// Pixel art, snowy night: a quiet sky over a band of hills and pines at the foot. Left, the front of the
+// Boom Stand-Up Bar with its sign lit; right, a little ticket booth and the orange critter selling tickets. The sky is plain gradient with
 // a few dim stars and slow snow, so nothing busy sits behind the words.
 const PAL: Record<string, string> = {
   o: '#e07a4f', d: '#b85c36', k: '#070707', w: '#f5f2ea', y: '#ffd102', t: '#1ebbb2', p: '#8505dc',
@@ -77,7 +77,7 @@ for (let i = 0; i < 30; i++) {
 const T = ['#145c5a', '#1b7a74', '#cfe9e6'] as const
 const T2 = ['#11504e', '#187069', '#cfe9e6'] as const
 const nearPines = [
-  pine(470, 950, 6, ...T2), pine(110, 900, 5, ...T), pine(540, 1010, 8, ...T), pine(40, 1040, 11, ...T2),
+  pine(470, 950, 6, ...T2), pine(90, 880, 5, ...T), pine(540, 1010, 8, ...T), pine(40, 1040, 11, ...T2),
   pine(1340, 930, 6, ...T2), pine(1440, 1000, 9, ...T), pine(1270, 1010, 8, ...T2), pine(1560, 1040, 11, ...T),
 ].join('')
 
@@ -96,25 +96,37 @@ for (let i = 0; i < 55; i++) {
   snow += `<rect class="sn" style="animation-duration:${dur}s;animation-delay:-${(rnd() * 26).toFixed(1)}s" x="${x}" y="-20" width="${sz}" height="${sz}" fill="#f5f2ea"/>`
 }
 
-let bulbs = ''
-for (let i = 0; i < 16; i++) {
-  bulbs += `<rect class="${i % 2 ? 'b1' : 'b2'}" x="${176 + i * 13}" y="776" width="4" height="4" fill="#ffd102"/>`
+// The Boom Stand-Up Bar front, after the real one: a tall charcoal block in horizontal panels, a recessed
+// upper bay with the lit BOOM sign, the white letter board, glass doors and a roll-up shutter.
+let board = ''
+for (let i = 1; i < 8; i++) {
+  board += `<rect x="${166 + i * 21}" y="798" width="1" height="36" fill="#bdbab1"/>`
 }
-
-// The Boom Stand Up Bar entrance: brick front, marquee sign, red door, warm windows.
-const BOOM = `<rect x="140" y="752" width="280" height="10" fill="#f5f2ea" opacity=".85"/>
-<rect x="140" y="762" width="280" height="8" fill="#0f0f0e"/>
-<rect x="150" y="770" width="260" height="160" fill="url(#brick)"/>
-<rect x="168" y="784" width="224" height="58" fill="#070707" stroke="#ffd102" stroke-width="4"/>
-${bulbs}
-<text class="neon" x="280" y="822" text-anchor="middle" font-family="Courier New,monospace" font-weight="900" font-size="32" letter-spacing="4" fill="#ffd102">BOOM</text>
-<text x="280" y="836" text-anchor="middle" font-family="Courier New,monospace" font-weight="700" font-size="9" letter-spacing="2" fill="#1ebbb2">STAND UP BAR</text>
-<rect x="172" y="864" width="56" height="40" fill="#070707"/><g class="win"><rect x="176" y="868" width="48" height="32" fill="#ffd102" opacity=".45"/></g>
-<rect x="196" y="878" width="4" height="22" fill="#070707"/><rect x="192" y="872" width="12" height="8" fill="#070707"/>
-<rect x="332" y="864" width="56" height="40" fill="#070707"/><g class="win"><rect x="336" y="868" width="48" height="32" fill="#ffd102" opacity=".45"/></g>
-<rect x="250" y="852" width="60" height="78" fill="#070707"/><rect x="256" y="858" width="48" height="72" fill="#e5484d"/>
-<rect x="266" y="866" width="28" height="14" fill="#ffd102" opacity=".55"/><rect x="294" y="894" width="4" height="8" fill="#ffd102"/>
-<rect x="230" y="930" width="100" height="6" fill="#ffd102" opacity=".1"/>`
+const BOOM = `<rect x="140" y="650" width="220" height="6" fill="#f5f2ea" opacity=".85"/>
+<rect x="140" y="656" width="220" height="24" fill="#353533"/>
+<rect x="128" y="680" width="244" height="250" fill="url(#panel)"/>
+<rect x="168" y="696" width="164" height="96" fill="#20201e"/>
+<rect x="178" y="744" width="144" height="40" fill="#121211"/>
+<g class="neon">
+<rect x="244" y="726" width="12" height="4" fill="#f5f2ea"/><rect x="240" y="730" width="20" height="6" fill="#f5f2ea"/>
+<rect x="249" y="736" width="2" height="8" fill="#f5f2ea"/>
+<text x="250" y="770" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="24" letter-spacing="1" fill="#f5f2ea">BOOM</text>
+<text x="250" y="780" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="6" letter-spacing="1.5" fill="#f5f2ea">STAND-UP BAR</text>
+</g>
+<rect x="164" y="796" width="172" height="40" fill="#e9e7e0"/>
+${board}
+<rect x="164" y="808" width="172" height="1" fill="#bdbab1"/><rect x="164" y="821" width="172" height="1" fill="#bdbab1"/>
+<text x="250" y="818" text-anchor="middle" font-family="Courier New,monospace" font-weight="700" font-size="9" fill="#070707">HOY</text>
+<text x="250" y="831" text-anchor="middle" font-family="Courier New,monospace" font-weight="700" font-size="9" fill="#070707">SET CITOS</text>
+<rect x="172" y="842" width="92" height="88" fill="#cfcdc6"/>
+<rect x="176" y="846" width="40" height="84" fill="#1d2827"/><rect x="220" y="846" width="40" height="84" fill="#1d2827"/>
+<g class="win"><rect x="176" y="846" width="84" height="84" fill="#ffd102" opacity=".18"/></g>
+<rect x="210" y="880" width="2" height="12" fill="#cfcdc6"/><rect x="224" y="880" width="2" height="12" fill="#cfcdc6"/>
+<rect x="272" y="850" width="72" height="80" fill="#3a3a37"/>
+<rect x="272" y="860" width="72" height="1" fill="#2a2a28"/><rect x="272" y="872" width="72" height="1" fill="#2a2a28"/>
+<rect x="272" y="884" width="72" height="1" fill="#2a2a28"/><rect x="272" y="896" width="72" height="1" fill="#2a2a28"/>
+<rect x="272" y="908" width="72" height="1" fill="#2a2a28"/><rect x="272" y="920" width="72" height="1" fill="#2a2a28"/>
+<rect x="160" y="930" width="116" height="6" fill="#ffd102" opacity=".08"/>`
 
 // Ticket booth: striped awning, a yellow FREETICKET sign, a lit window.
 const BOOTH = [
@@ -149,7 +161,7 @@ const SCENE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" p
 <stop offset="0" stop-color="#070707"/><stop offset=".45" stop-color="#0a100f"/>
 <stop offset=".7" stop-color="#0f2220"/><stop offset=".78" stop-color="#143330"/>
 </linearGradient>
-<pattern id="brick" width="24" height="12" patternUnits="userSpaceOnUse"><rect width="24" height="12" fill="#1f1d1a"/><rect y="10" width="24" height="2" fill="#141311"/><rect x="10" width="2" height="5" fill="#141311"/><rect x="22" y="5" width="2" height="5" fill="#141311"/></pattern>
+<pattern id="panel" width="24" height="22" patternUnits="userSpaceOnUse"><rect width="24" height="22" fill="#2c2c2a"/><rect y="20" width="24" height="2" fill="#1c1c1a"/></pattern>
 <radialGradient id="glow" cx=".5" cy=".78" r=".45"><stop offset="0" stop-color="#1ebbb2" stop-opacity=".14"/><stop offset="1" stop-color="#1ebbb2" stop-opacity="0"/></radialGradient>
 </defs>
 <style>
@@ -158,15 +170,13 @@ const SCENE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" p
 .bob{animation:bob 1.2s steps(1) infinite}
 .win{animation:flick 7s steps(1) infinite}
 .tk{animation:up 5s linear infinite;opacity:0}
-.b1{animation:bl 1.4s steps(1) infinite}.b2{animation:bl 1.4s steps(1) infinite -.7s}
 .neon{animation:flick 9s steps(1) infinite}
-@keyframes bl{0%{opacity:1}50%{opacity:.2}}
 @keyframes tw{0%,100%{opacity:.2}50%{opacity:.55}}
 @keyframes fall{0%{transform:translate(0,0)}50%{transform:translate(18px,520px)}100%{transform:translate(0,1060px)}}
 @keyframes bob{0%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 @keyframes flick{0%,96%{opacity:1}97%,100%{opacity:.75}}
 @keyframes up{0%{transform:translate(0,0);opacity:0}15%{opacity:1}80%{opacity:1}100%{transform:translate(-10px,-60px);opacity:0}}
-@media (prefers-reduced-motion:reduce){.st,.sn,.bob,.win,.tk,.b1,.b2,.neon{animation:none}.sn{display:none}}
+@media (prefers-reduced-motion:reduce){.st,.sn,.bob,.win,.tk,.neon{animation:none}.sn{display:none}}
 </style>
 <rect width="1600" height="1000" fill="url(#sky)"/>
 <rect width="1600" height="1000" fill="url(#glow)"/>
