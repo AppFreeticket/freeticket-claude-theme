@@ -1,5 +1,16 @@
 {
   "name": "freeticket-claude-theme",
-  "owner": { "name": "FreeTicket" },
-  "plugins": [{ "name": "freeticket-theme", "source": "./" }]
+  "owner": { "name": "FreeTicket", "url": "https://appfreeticket.com" },
+  "metadata": {
+    "description": "FreeTicket theme for the Claude desktop and mobile apps"
+  },
+  "plugins": [
+    {
+      "name": "freeticket-theme",
+      "source": "./",
+      "description": "Cartel ink, brand yellow and teal, and an animated snowy pixel-art night with the Boom Stand-Up Bar",
+      "category": "theme",
+      "keywords": ["theme", "claude-theme", "pixel-art", "dark", "backdrop"]
+    }
+  ]
 }

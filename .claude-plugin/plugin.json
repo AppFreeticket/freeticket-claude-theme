@@ -1,1 +1,10 @@
-{ "name": "freeticket-theme", "version": "0.4.1", "description": "FreeTicket look for Claude: cartel ink, yellow accent and a snowy pixel-art night backdrop" }
+{
+  "name": "freeticket-theme",
+  "version": "0.4.2",
+  "description": "FreeTicket theme for the Claude desktop and mobile apps: cartel ink, brand yellow and teal, and an animated snowy pixel-art night with the Boom Stand-Up Bar",
+  "author": { "name": "FreeTicket", "url": "https://appfreeticket.com" },
+  "homepage": "https://github.com/AppFreeticket/freeticket-claude-theme",
+  "repository": "https://github.com/AppFreeticket/freeticket-claude-theme",
+  "license": "MIT",
+  "keywords": ["theme", "claude-theme", "pixel-art", "dark", "backdrop", "freeticket"]
+}
