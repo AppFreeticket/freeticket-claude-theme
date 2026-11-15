@@ -33,43 +33,105 @@ const { theme, problems } = makeColors({
   },
 })
 
-// Tickets drift in the corners, a cartel ribbon crosses the top; the middle and foot stay clear for words.
-const SCENE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+// Pixel art: a little orange critter typing on a laptop open on FreeTicket, tickets popping out,
+// a marquee sign top-left and twinkling stars. Subjects hug the sides; the middle stays clear for words.
+const PAL: Record<string, string> = {
+  o: '#e07a4f', d: '#b85c36', k: '#070707', w: '#f5f2ea', y: '#ffd102', t: '#1ebbb2', p: '#8505dc', g: '#3a3a36',
+}
+
+function px(map: string[], x0: number, y0: number, s: number): string {
+  let out = ''
+  map.forEach((row, j) => {
+    ;[...row].forEach((c, i) => {
+      const fill = PAL[c]
+      if (fill !== undefined) {
+        out += `<rect x="${x0 + i * s}" y="${y0 + j * s}" width="${s}" height="${s}" fill="${fill}"/>`
+      }
+    })
+  })
+  return out
+}
+
+const CRITTER = [
+  '...oooooooooo...',
+  '...oooooooooo...',
+  '...ookooookoo...',
+  'oooooooooooooooo',
+  'oooooooooooooooo',
+  '...oooooooooo...',
+  '...dddddddddd...',
+  '...o.o....o.o...',
+  '...o.o....o.o...',
+]
+const LIDS = ['......o....o....']
+const LAPTOP = [
+  '.wwwwwwwwwwwwww.',
+  '.wyyyyyyyyyyyyw.',
+  '.wykkkykkkkkyyw.',
+  '.wykyyyyykyyyyw.',
+  '.wykkyyyykyyyyw.',
+  '.wykyyyyykyyyyw.',
+  '.wyyyyyyyyyyyyw.',
+  '.wwwwwwwwwwwwww.',
+  'gggggggggggggggg',
+]
+const TICKET = ['yyyyyyy', 'ykkyyyy', '.yyyyy.', 'ykkkyyy', 'yyyyyyy']
+const TICKET_T = ['ttttttt', 'tkktttt', '.ttttt.', 'tkkkttt', 'ttttttt']
+const TICKET_P = ['ppppppp', 'pwwpppp', '.ppppp.', 'pwwwppp', 'ppppppp']
+
+// Deterministic stars.
+let seed = 7
+const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
+let stars = ''
+for (let i = 0; i < 70; i++) {
+  const x = Math.floor(rnd() * 400) * 4
+  const y = Math.floor(rnd() * 160) * 4
+  const s = rnd() > 0.8 ? 8 : 4
+  stars += `<rect class="st" style="animation-delay:-${(rnd() * 4).toFixed(1)}s" x="${x}" y="${y}" width="${s}" height="${s}" fill="#f5f2ea"/>`
+}
+
+let bulbs = ''
+for (let i = 0; i < 14; i++) {
+  bulbs += `<rect class="${i % 2 ? 'b1' : 'b2'}" x="${22 + i * 12}" y="22" width="4" height="4" fill="#ffd102"/>`
+  bulbs += `<rect class="${i % 2 ? 'b2' : 'b1'}" x="${22 + i * 12}" y="78" width="4" height="4" fill="#ffd102"/>`
+}
+
+const SCENE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges">
 <style>
-.d1{animation:f 18s ease-in-out infinite}
-.d2{animation:f 23s ease-in-out infinite reverse}
-.d3{animation:f 29s ease-in-out infinite}
-.r{animation:s 40s linear infinite}
-@keyframes f{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-24px) rotate(2deg)}}
-@keyframes s{from{transform:translateX(0)}to{transform:translateX(-400px)}}
-@media (prefers-reduced-motion:reduce){.d1,.d2,.d3,.r{animation:none}}
+.st{animation:tw 4s steps(2) infinite}
+.b1{animation:bl 1.2s steps(1) infinite}.b2{animation:bl 1.2s steps(1) infinite -.6s}
+.bob{animation:bob 1s steps(1) infinite}
+.lid{opacity:0;animation:blink 5s steps(1) infinite}
+.tk{animation:up 6s linear infinite;opacity:0}
+.tk2{animation-delay:-2s}.tk3{animation-delay:-4s}
+@keyframes tw{0%,100%{opacity:.25}50%{opacity:.8}}
+@keyframes bl{0%{opacity:1}50%{opacity:.15}}
+@keyframes bob{0%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes blink{0%,94%{opacity:0}95%,100%{opacity:1}}
+@keyframes up{0%{transform:translate(0,0);opacity:0}10%{opacity:1}80%{opacity:1}100%{transform:translate(-24px,-120px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.st,.b1,.b2,.bob,.lid,.tk{animation:none}.tk{opacity:1}}
 </style>
-<defs>
-<g id="t">
-<path d="M0 0h220v44a16 16 0 0 0 0 32v44H0V76a16 16 0 0 0 0-32z" fill="currentColor" stroke="#070707" stroke-width="4"/>
-<path d="M160 8v104" stroke="#070707" stroke-width="3" stroke-dasharray="8 8"/>
-<rect x="22" y="26" width="110" height="14" fill="#070707" opacity=".85"/>
-<rect x="22" y="52" width="80" height="10" fill="#070707" opacity=".55"/>
-<rect x="22" y="72" width="96" height="10" fill="#070707" opacity=".55"/>
-</g>
-</defs>
-<g opacity=".22">
-<g transform="rotate(-8 1600 0)">
-<rect x="-200" y="40" width="2400" height="70" fill="#ffd102" stroke="#070707" stroke-width="4"/>
-<g class="r" font-family="Arial Narrow,Arial,sans-serif" font-weight="900" font-size="40" fill="#070707">
-<text x="0" y="90">FREETICKET ★ ENTRADAS ★ FREETICKET ★ ENTRADAS ★ FREETICKET ★ ENTRADAS ★ FREETICKET ★ ENTRADAS ★ FREETICKET ★ ENTRADAS ★</text>
-</g>
-</g>
-<g class="d1" style="color:#ffd102"><use href="#t" transform="translate(60 230) rotate(-14)"/></g>
-<g class="d2" style="color:#1ebbb2"><use href="#t" transform="translate(1330 300) rotate(12)"/></g>
-<g class="d3" style="color:#8505dc"><use href="#t" transform="translate(110 640) rotate(9)"/></g>
-<g class="d1" style="color:#ffd102"><use href="#t" transform="translate(1300 700) rotate(-10)"/></g>
-</g>
+<g opacity=".55">${stars}</g>
+<svg width="1600" height="1000" viewBox="0 0 400 300" preserveAspectRatio="xMinYMin meet">
+<rect x="14" y="14" width="180" height="76" fill="#070707" stroke="#ffd102" stroke-width="4"/>
+${bulbs}
+<text x="104" y="62" text-anchor="middle" font-family="Courier New,monospace" font-weight="900" font-size="20" fill="#ffd102" letter-spacing="1">FREETICKET</text>
+<text x="104" y="76" text-anchor="middle" font-family="Courier New,monospace" font-weight="700" font-size="8" fill="#1ebbb2">★ ENTRADAS ★</text>
+<rect x="44" y="90" width="4" height="40" fill="#3a3a36"/><rect x="160" y="90" width="4" height="40" fill="#3a3a36"/>
+</svg>
+<svg width="1600" height="1000" viewBox="0 0 400 300" preserveAspectRatio="xMaxYMid meet">
+<g class="tk">${px(TICKET, 344, 150, 3)}</g>
+<g class="tk tk2">${px(TICKET_T, 352, 150, 3)}</g>
+<g class="tk tk3">${px(TICKET_P, 336, 150, 3)}</g>
+${px(LAPTOP, 318, 162, 4)}
+<g class="bob">${px(CRITTER, 250, 170, 4)}<g class="lid">${px(LIDS, 250, 178, 4)}</g></g>
+<rect x="240" y="206" width="160" height="4" fill="#3a3a36"/>
+</svg>
 </svg>`
 
 const LOOK: ThemeSetArgs = {
   colors: theme,
-  backdrop: { scene: 'freeticket', glass: { blur: 2, tint: '#070707', opacity: 0.08 } },
+  backdrop: { scene: 'freeticket-pixel', glass: false },
 }
 
 export const register: Register = on => {
@@ -94,6 +156,6 @@ export const register: Register = on => {
     }
     const { Svg } = $.ui.resolve(e)
 
-    return <Svg source={SCENE} alt="FreeTicket tickets drifting under a cartel ribbon" isInteractive />
+    return <Svg source={SCENE} alt="Pixel art: a little critter typing on a laptop open on FreeTicket, tickets popping out under a marquee sign" isInteractive />
   })
 }
