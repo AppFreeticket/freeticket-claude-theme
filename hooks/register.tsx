@@ -2,41 +2,32 @@ import type { Register, ThemeSetArgs } from 'claude-code'
 
 import { makeColors } from './make-colors.js'
 
-// FreeTicket: cartel ink + poster paper, yellow/teal/purple brand roles.
+// FreeTicket at night: navy-violet ink surfaces, yellow/teal/purple brand roles. A dark scene, so dark only.
 const { theme, problems } = makeColors({
   label: 'FreeTicket',
+  only: 'dark',
   roles: { accent: '#ffd102', danger: '#e5484d', success: '#1ebbb2', warning: '#f08c00', pro: '#8505dc' },
-  light: {
-    gray: {
-      anchors: {
-        'surface-0': '#efebe0',
-        'surface-1': '#f5f2ea',
-        'surface-2': '#fbf9f4',
-        'text-primary': '#070707',
-        'text-secondary': '#33312b',
-        'text-muted': '#5c5a52',
-      },
-    },
-  },
   dark: {
     gray: {
       anchors: {
-        'surface-0': '#070707',
-        'surface-1': '#111110',
-        'surface-2': '#191917',
-        'surface-3': '#1f1f1c',
-        'text-primary': '#f5f2ea',
-        'text-secondary': '#cfcbc0',
-        'text-muted': '#a8a498',
+        'surface-0': '#0e0c1c',
+        'surface-1': '#16142a',
+        'surface-2': '#1d1a33',
+        'surface-3': '#221f3a',
+        'text-primary': '#f3f1fa',
+        'text-secondary': '#cdc8de',
+        'text-muted': '#a39dba',
       },
     },
   },
 })
 
-// Pixel art: a little orange critter typing on a laptop open on FreeTicket, tickets popping out,
-// a marquee sign top-left and twinkling stars. Subjects hug the sides; the middle stays clear for words.
+// Pixel art, snowy night: a quiet sky over a band of hills and pines at the foot, a little ticket booth
+// with its light on and the orange critter selling tickets beside it. The sky is plain gradient with
+// a few dim stars and slow snow, so nothing busy sits behind the words.
 const PAL: Record<string, string> = {
-  o: '#e07a4f', d: '#b85c36', k: '#070707', w: '#f5f2ea', y: '#ffd102', t: '#1ebbb2', p: '#8505dc', g: '#3a3a36',
+  o: '#e07a4f', d: '#b85c36', k: '#0e0c1c', w: '#e9e6f5', y: '#ffd102', t: '#1ebbb2', p: '#8505dc',
+  g: '#2a2545', b: '#3b335e', r: '#6b4a8a',
 }
 
 function px(map: string[], x0: number, y0: number, s: number): string {
@@ -52,86 +43,126 @@ function px(map: string[], x0: number, y0: number, s: number): string {
   return out
 }
 
-const CRITTER = [
-  '...oooooooooo...',
-  '...oooooooooo...',
-  '...ookooookoo...',
-  'oooooooooooooooo',
-  'oooooooooooooooo',
-  '...oooooooooo...',
-  '...dddddddddd...',
-  '...o.o....o.o...',
-  '...o.o....o.o...',
-]
-const LIDS = ['......o....o....']
-const LAPTOP = [
-  '.wwwwwwwwwwwwww.',
-  '.wyyyyyyyyyyyyw.',
-  '.wykkkykkkkkyyw.',
-  '.wykyyyyykyyyyw.',
-  '.wykkyyyykyyyyw.',
-  '.wykyyyyykyyyyw.',
-  '.wyyyyyyyyyyyyw.',
-  '.wwwwwwwwwwwwww.',
-  'gggggggggggggggg',
-]
-const TICKET = ['yyyyyyy', 'ykkyyyy', '.yyyyy.', 'ykkkyyy', 'yyyyyyy']
-const TICKET_T = ['ttttttt', 'tkktttt', '.ttttt.', 'tkkkttt', 'ttttttt']
-const TICKET_P = ['ppppppp', 'pwwpppp', '.ppppp.', 'pwwwppp', 'ppppppp']
-
-// Deterministic stars.
-let seed = 7
+let seed = 11
 const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
-let stars = ''
-for (let i = 0; i < 70; i++) {
-  const x = Math.floor(rnd() * 400) * 4
-  const y = Math.floor(rnd() * 160) * 4
-  const s = rnd() > 0.8 ? 8 : 4
-  stars += `<rect class="st" style="animation-delay:-${(rnd() * 4).toFixed(1)}s" x="${x}" y="${y}" width="${s}" height="${s}" fill="#f5f2ea"/>`
+
+// A stepped pixel pine: three tiers, a snow cap on each, a lit left edge.
+function pine(cx: number, by: number, s: number, dark: string, lit: string, cap: string): string {
+  const tierH = 5
+  const tiers = 3
+  const top = by - (tiers * tierH + 2) * s
+  let out = ''
+  for (let t = 0; t < tiers; t++) {
+    for (let j = 0; j < tierH; j++) {
+      const half = j + t
+      const y = top + (t * tierH + j) * s
+      const x = cx - half * s - s / 2
+      const w = (half * 2 + 1) * s
+      out += `<rect x="${x}" y="${y}" width="${w}" height="${s}" fill="${dark}"/>`
+      out += `<rect x="${x}" y="${y}" width="${Math.max(s, Math.floor(half / 2) * s)}" height="${s}" fill="${lit}"/>`
+      if (j === 0) {
+        out += `<rect x="${x}" y="${y}" width="${w}" height="${s}" fill="${cap}"/>`
+      }
+    }
+  }
+  out += `<rect x="${cx - s / 2}" y="${top + tiers * tierH * s}" width="${s}" height="${2 * s}" fill="#1a1530"/>`
+  return out
 }
 
-let bulbs = ''
-for (let i = 0; i < 14; i++) {
-  bulbs += `<rect class="${i % 2 ? 'b1' : 'b2'}" x="${22 + i * 12}" y="22" width="4" height="4" fill="#ffd102"/>`
-  bulbs += `<rect class="${i % 2 ? 'b2' : 'b1'}" x="${22 + i * 12}" y="78" width="4" height="4" fill="#ffd102"/>`
+let farPines = ''
+for (let i = 0; i < 30; i++) {
+  const x = i < 15 ? 20 + rnd() * 600 : 980 + rnd() * 620
+  farPines += pine(Math.round(x / 4) * 4, 752 + Math.round(rnd() * 3) * 4, 4, '#3d3666', '#4a4378', '#8f88b8')
 }
+const T = ['#145c5a', '#1b7a74', '#cfe9e6'] as const
+const T2 = ['#11504e', '#187069', '#cfe9e6'] as const
+const nearPines = [
+  pine(250, 930, 6, ...T2), pine(150, 990, 9, ...T), pine(330, 1000, 8, ...T), pine(40, 1040, 11, ...T2),
+  pine(1340, 930, 6, ...T2), pine(1440, 1000, 9, ...T), pine(1270, 1010, 8, ...T2), pine(1560, 1040, 11, ...T),
+].join('')
+
+let stars = ''
+for (let i = 0; i < 45; i++) {
+  const x = Math.floor(rnd() * 400) * 4
+  const y = Math.floor(rnd() * 140) * 4
+  stars += `<rect class="st" style="animation-delay:-${(rnd() * 5).toFixed(1)}s" x="${x}" y="${y}" width="3" height="3" fill="#cdc8de"/>`
+}
+
+let snow = ''
+for (let i = 0; i < 55; i++) {
+  const x = Math.floor(rnd() * 1600)
+  const sz = rnd() > 0.75 ? 4 : 3
+  const dur = (14 + rnd() * 12).toFixed(1)
+  snow += `<rect class="sn" style="animation-duration:${dur}s;animation-delay:-${(rnd() * 26).toFixed(1)}s" x="${x}" y="-20" width="${sz}" height="${sz}" fill="#e9e6f5"/>`
+}
+
+// Ticket booth: striped awning, a yellow FREETICKET sign, a lit window.
+const BOOTH = [
+  '....yyyyyyyyyyyy....',
+  '....ykkkykkykkyy....',
+  '....yyyyyyyyyyyy....',
+  '..wpwpwpwpwpwpwpwp..',
+  '..pwpwpwpwpwpwpwpw..',
+  '...gggggggggggggg...',
+  '...gyyyyyyyyyyyyg...',
+  '...gyyyyyyyyyyyyg...',
+  '...gyyyyyyyyyyyyg...',
+  '...ggggggggggggggg..',
+  '...gbbbbbbbbbbbbg...',
+  '...gbbbbbbbbbbbbg...',
+  '...gbbbbbbbbbbbbg...',
+  '...gggggggggggggg...',
+]
+const CRITTER = [
+  '..oooooooo..',
+  '..okooooko..',
+  'oooooooooooo',
+  '..oooooooo..',
+  '..dddddddd..',
+  '..o.o..o.o..',
+]
+const TICKET = ['yyyyy', 'ykkyy', 'yyyyy']
 
 const SCENE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges">
+<defs>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#0e0c1c"/><stop offset=".45" stop-color="#16132e"/>
+<stop offset=".7" stop-color="#2a1f45"/><stop offset=".78" stop-color="#3e2550"/>
+</linearGradient>
+<radialGradient id="glow" cx=".5" cy=".78" r=".45"><stop offset="0" stop-color="#8505dc" stop-opacity=".18"/><stop offset="1" stop-color="#8505dc" stop-opacity="0"/></radialGradient>
+</defs>
 <style>
-.st{animation:tw 4s steps(2) infinite}
-.b1{animation:bl 1.2s steps(1) infinite}.b2{animation:bl 1.2s steps(1) infinite -.6s}
-.bob{animation:bob 1s steps(1) infinite}
-.lid{opacity:0;animation:blink 5s steps(1) infinite}
-.tk{animation:up 6s linear infinite;opacity:0}
-.tk2{animation-delay:-2s}.tk3{animation-delay:-4s}
-@keyframes tw{0%,100%{opacity:.25}50%{opacity:.8}}
-@keyframes bl{0%{opacity:1}50%{opacity:.15}}
-@keyframes bob{0%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-@keyframes blink{0%,94%{opacity:0}95%,100%{opacity:1}}
-@keyframes up{0%{transform:translate(0,0);opacity:0}10%{opacity:1}80%{opacity:1}100%{transform:translate(-24px,-120px);opacity:0}}
-@media (prefers-reduced-motion:reduce){.st,.b1,.b2,.bob,.lid,.tk{animation:none}.tk{opacity:1}}
+.st{animation:tw 5s steps(2) infinite}
+.sn{animation:fall 20s linear infinite;opacity:.45}
+.bob{animation:bob 1.2s steps(1) infinite}
+.win{animation:flick 7s steps(1) infinite}
+.tk{animation:up 5s linear infinite;opacity:0}
+@keyframes tw{0%,100%{opacity:.2}50%{opacity:.55}}
+@keyframes fall{0%{transform:translate(0,0)}50%{transform:translate(18px,520px)}100%{transform:translate(0,1060px)}}
+@keyframes bob{0%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes flick{0%,96%{opacity:1}97%,100%{opacity:.75}}
+@keyframes up{0%{transform:translate(0,0);opacity:0}15%{opacity:1}80%{opacity:1}100%{transform:translate(-10px,-60px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.st,.sn,.bob,.win,.tk{animation:none}.sn{display:none}}
 </style>
-<g opacity=".55">${stars}</g>
-<svg width="1600" height="1000" viewBox="0 0 400 300" preserveAspectRatio="xMinYMin meet">
-<rect x="14" y="14" width="180" height="76" fill="#070707" stroke="#ffd102" stroke-width="4"/>
-${bulbs}
-<text x="104" y="62" text-anchor="middle" font-family="Courier New,monospace" font-weight="900" font-size="20" fill="#ffd102" letter-spacing="1">FREETICKET</text>
-<text x="104" y="76" text-anchor="middle" font-family="Courier New,monospace" font-weight="700" font-size="8" fill="#1ebbb2">★ ENTRADAS ★</text>
-<rect x="44" y="90" width="4" height="40" fill="#3a3a36"/><rect x="160" y="90" width="4" height="40" fill="#3a3a36"/>
-</svg>
-<svg width="1600" height="1000" viewBox="0 0 400 300" preserveAspectRatio="xMaxYMid meet">
-<g class="tk">${px(TICKET, 344, 150, 3)}</g>
-<g class="tk tk2">${px(TICKET_T, 352, 150, 3)}</g>
-<g class="tk tk3">${px(TICKET_P, 336, 150, 3)}</g>
-${px(LAPTOP, 318, 162, 4)}
-<g class="bob">${px(CRITTER, 250, 170, 4)}<g class="lid">${px(LIDS, 250, 178, 4)}</g></g>
-<rect x="240" y="206" width="160" height="4" fill="#3a3a36"/>
-</svg>
+<rect width="1600" height="1000" fill="url(#sky)"/>
+<rect width="1600" height="1000" fill="url(#glow)"/>
+<g>${stars}</g>
+<g>${farPines}</g>
+<path d="M0 770 Q 400 735 800 765 T 1600 760 V1000 H0Z" fill="#3b335e"/>
+<path d="M0 820 Q 500 780 1000 815 T 1600 805 V1000 H0Z" fill="#453d6c"/>
+<path d="M0 900 Q 600 860 1200 905 T 1600 890 V1000 H0Z" fill="#4c4475"/>
+<g>${nearPines}</g>
+<g>${px(BOOTH, 1110, 812, 4)}</g>
+<g class="win"><rect x="1126" y="852" width="48" height="12" fill="#ffd102" opacity=".35"/></g>
+<rect x="1110" y="868" width="88" height="6" fill="#ffd102" opacity=".08"/>
+<g class="tk">${px(TICKET, 1110, 830, 3)}</g>
+<g class="bob">${px(CRITTER, 1200, 846, 4)}</g>
+<g>${snow}</g>
 </svg>`
 
 const LOOK: ThemeSetArgs = {
   colors: theme,
-  backdrop: { scene: 'freeticket-pixel', glass: false },
+  backdrop: { scene: 'freeticket-snow', glass: false },
 }
 
 export const register: Register = on => {
@@ -163,6 +194,6 @@ export const register: Register = on => {
     }
     const { Svg } = $.ui.resolve(e)
 
-    return <Svg source={SCENE} alt="Pixel art: a little critter typing on a laptop open on FreeTicket, tickets popping out under a marquee sign" isInteractive />
+    return <Svg source={SCENE} alt="Pixel art: a snowy night with pines and a lit FreeTicket booth, a little critter selling tickets beside it" isInteractive />
   })
 }
