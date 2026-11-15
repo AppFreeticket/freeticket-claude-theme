@@ -1,0 +1,5 @@
+{
+  "name": "freeticket-claude-theme",
+  "owner": { "name": "FreeTicket" },
+  "plugins": [{ "name": "freeticket-theme", "source": "./" }]
+}
